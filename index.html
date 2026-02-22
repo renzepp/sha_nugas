@@ -164,19 +164,34 @@
   .deadline-clear{background:none;border:none;cursor:pointer;color:#e8a0a0;font-size:0.7rem;padding:0 2px;transition:0.15s;line-height:1;}
   .deadline-clear:hover{color:#e74c3c;}
 
-  /* Materials */
+  /* Materials — two-column */
   .soal-section{background:#ffffffcc;border:1.5px solid var(--border);border-radius:16px;padding:0.85rem 1.1rem;margin-bottom:1.3rem;backdrop-filter:blur(4px);}
-  .soal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.55rem;}
+  .soal-cols{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;}
+  .soal-col{display:flex;flex-direction:column;gap:0.4rem;}
+  .soal-col-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.35rem;}
   .soal-label{font-size:0.68rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-light);font-weight:700;}
-  .soal-add-btn{display:flex;align-items:center;gap:0.4rem;padding:0.28rem 0.75rem;border-radius:99px;border:1.5px solid var(--pink-mid);background:white;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:600;color:var(--pink-deep);transition:all 0.2s;}
+  .soal-col-btns{display:flex;gap:0.3rem;}
+  .soal-add-btn{display:flex;align-items:center;gap:0.4rem;padding:0.22rem 0.6rem;border-radius:99px;border:1.5px solid var(--pink-mid);background:white;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:600;color:var(--pink-deep);transition:all 0.2s;}
   .soal-add-btn:hover{background:#fff0f5;border-color:var(--pink-deep);}
-  .soal-files{display:flex;flex-wrap:wrap;gap:0.45rem;}
+  .soal-col-divider{width:1px;background:var(--border);margin:0 0.2rem;}
+  .soal-files{display:flex;flex-wrap:wrap;gap:0.4rem;min-height:28px;}
   .soal-file-chip{display:flex;align-items:center;gap:0.4rem;padding:0.28rem 0.65rem;border-radius:99px;background:linear-gradient(135deg,#fff0f5,#fce4ec);border:1.5px solid var(--border);font-size:0.78rem;font-weight:600;color:var(--text-mid);cursor:pointer;transition:all 0.2s;max-width:210px;}
   .soal-file-chip:hover{border-color:var(--pink-mid);box-shadow:0 2px 8px var(--shadow);}
   .soal-file-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:150px;}
   .soal-file-del{background:none;border:none;cursor:pointer;color:var(--text-light);font-size:0.68rem;padding:0 2px;transition:0.15s;flex-shrink:0;}
   .soal-file-del:hover{color:var(--pink-deep);}
-  .soal-empty{font-size:0.8rem;color:var(--text-light);font-weight:500;}
+  .soal-link-chip{display:flex;align-items:center;gap:0.35rem;padding:0.22rem 0.55rem;border-radius:99px;background:linear-gradient(135deg,#f0f8ff,#e8f4fd);border:1.5px solid #c5ddf8;font-size:0.75rem;font-weight:600;color:#3d6dbd;cursor:default;transition:all 0.2s;max-width:210px;}
+  .soal-link-chip:hover{border-color:#7ab4e8;box-shadow:0 2px 8px rgba(122,180,232,0.25);}
+  .soal-link-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:130px;cursor:pointer;text-decoration:underline;text-underline-offset:2px;}
+  .soal-link-del{background:none;border:none;cursor:pointer;color:#8aaee0;font-size:0.68rem;padding:0 2px;transition:0.15s;flex-shrink:0;}
+  .soal-link-del:hover{color:#2965ad;}
+  /* inline link add row */
+  .soal-link-add-row{display:flex;align-items:center;gap:0.3rem;margin-top:0.2rem;}
+  .soal-link-add-input{flex:1;padding:0.22rem 0.55rem;border:1.5px solid var(--border);border-radius:99px;font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:500;color:var(--text-dark);background:white;outline:none;min-width:0;transition:border-color 0.2s;}
+  .soal-link-add-input:focus{border-color:#7ab4e8;}
+  .soal-link-add-ok{padding:0.22rem 0.6rem;border-radius:99px;border:1.5px solid #c5ddf8;background:#edf4fd;cursor:pointer;font-size:0.72rem;font-weight:700;color:#2965ad;transition:0.15s;white-space:nowrap;}
+  .soal-link-add-ok:hover{background:#daeafa;}
+  .soal-empty{font-size:0.78rem;color:var(--text-light);font-weight:500;font-style:italic;}
 
   /* Tasks */
   .tasks-label{font-size:0.68rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-light);font-weight:700;margin-bottom:0.9rem;}
@@ -485,7 +500,8 @@ function createAssignment(){
   const a={
     id:uid(), name, icon:selEmojiAssignment,
     status:'untouched', submitted:false, submitLink:'',
-    tasks:[], materialFiles:[],
+    tasks:[], materialFiles:[], materialLinks:[],
+    questionFiles:[], questionLinks:[],
     startDate:null, dueDate:null, dueTime:null, createdAt:todayISO()
   };
   s.assignments.push(a); s.open=true;
@@ -668,14 +684,45 @@ function renderMemo(){
       </div>
     </div>
 
-    <!-- Materials -->
+    <!-- Materials & Question Files — two columns -->
     <div class="soal-section">
-      <div class="soal-header">
-        <span class="soal-label">📎 materials & question files</span>
-        <button class="soal-add-btn" id="soal-add-btn">＋ upload file</button>
+      <div class="soal-cols">
+        <!-- LEFT: Materials -->
+        <div class="soal-col">
+          <div class="soal-col-header">
+            <span class="soal-label">📎 materials</span>
+            <div class="soal-col-btns">
+              <button class="soal-add-btn" id="mat-add-file-btn">＋ file</button>
+              <button class="soal-add-btn" id="mat-add-link-btn" style="border-color:#7ab4e8;color:#2965ad;">＋ link</button>
+            </div>
+          </div>
+          <div class="soal-files" id="mat-files"></div>
+          <div id="mat-link-add-row" style="display:none" class="soal-link-add-row">
+            <input class="soal-link-add-input" id="mat-link-input" type="url" placeholder="paste url..." />
+            <button class="soal-link-add-ok" id="mat-link-ok">add</button>
+          </div>
+          <input type="file" id="mat-file-input" style="display:none" multiple accept="image/*,.pdf,.doc,.docx,.pptx,.xlsx,.txt" />
+        </div>
+
+        <div class="soal-col-divider"></div>
+
+        <!-- RIGHT: Question Files -->
+        <div class="soal-col">
+          <div class="soal-col-header">
+            <span class="soal-label">📋 question files</span>
+            <div class="soal-col-btns">
+              <button class="soal-add-btn" id="qf-add-file-btn">＋ file</button>
+              <button class="soal-add-btn" id="qf-add-link-btn" style="border-color:#7ab4e8;color:#2965ad;">＋ link</button>
+            </div>
+          </div>
+          <div class="soal-files" id="qf-files"></div>
+          <div id="qf-link-add-row" style="display:none" class="soal-link-add-row">
+            <input class="soal-link-add-input" id="qf-link-input" type="url" placeholder="paste url..." />
+            <button class="soal-link-add-ok" id="qf-link-ok">add</button>
+          </div>
+          <input type="file" id="qf-file-input" style="display:none" multiple accept="image/*,.pdf,.doc,.docx,.pptx,.xlsx,.txt" />
+        </div>
       </div>
-      <div class="soal-files" id="soal-files"></div>
-      <input type="file" id="soal-file-input" style="display:none" multiple accept="image/*,.pdf,.doc,.docx,.pptx,.xlsx,.txt" />
     </div>
 
     <!-- Notes -->
@@ -755,10 +802,10 @@ function renderMemo(){
     });
   }
 
-  // Material files
-  const soalIn=page.querySelector('#soal-file-input');
-  page.querySelector('#soal-add-btn').addEventListener('click',()=>soalIn.click());
-  soalIn.addEventListener('change',function(){
+  // Materials — file
+  const matFileIn=page.querySelector('#mat-file-input');
+  page.querySelector('#mat-add-file-btn').addEventListener('click',()=>matFileIn.click());
+  matFileIn.addEventListener('change',function(){
     Array.from(this.files).forEach(file=>{
       const r=new FileReader();
       r.onload=e=>{ if(!asgn.materialFiles) asgn.materialFiles=[]; asgn.materialFiles.push({name:file.name,data:e.target.result,type:file.type}); save(); renderMaterialFiles(asgn); };
@@ -766,6 +813,50 @@ function renderMemo(){
     });
     this.value='';
   });
+
+  // Materials — link
+  const matLinkRow=page.querySelector('#mat-link-add-row');
+  const matLinkInput=page.querySelector('#mat-link-input');
+  page.querySelector('#mat-add-link-btn').addEventListener('click',()=>{
+    matLinkRow.style.display=matLinkRow.style.display==='none'?'flex':'none';
+    if(matLinkRow.style.display==='flex') setTimeout(()=>matLinkInput.focus(),40);
+  });
+  function commitMatLink(){
+    const url=matLinkInput.value.trim(); if(!url) return;
+    if(!asgn.materialLinks) asgn.materialLinks=[];
+    asgn.materialLinks.push(url); save(); renderMaterialFiles(asgn);
+    matLinkInput.value=''; matLinkRow.style.display='none';
+  }
+  page.querySelector('#mat-link-ok').addEventListener('click',commitMatLink);
+  matLinkInput.addEventListener('keydown',e=>{ if(e.key==='Enter') commitMatLink(); });
+
+  // Question Files — file
+  const qfFileIn=page.querySelector('#qf-file-input');
+  page.querySelector('#qf-add-file-btn').addEventListener('click',()=>qfFileIn.click());
+  qfFileIn.addEventListener('change',function(){
+    Array.from(this.files).forEach(file=>{
+      const r=new FileReader();
+      r.onload=e=>{ if(!asgn.questionFiles) asgn.questionFiles=[]; asgn.questionFiles.push({name:file.name,data:e.target.result,type:file.type}); save(); renderQuestionFiles(asgn); };
+      r.readAsDataURL(file);
+    });
+    this.value='';
+  });
+
+  // Question Files — link
+  const qfLinkRow=page.querySelector('#qf-link-add-row');
+  const qfLinkInput=page.querySelector('#qf-link-input');
+  page.querySelector('#qf-add-link-btn').addEventListener('click',()=>{
+    qfLinkRow.style.display=qfLinkRow.style.display==='none'?'flex':'none';
+    if(qfLinkRow.style.display==='flex') setTimeout(()=>qfLinkInput.focus(),40);
+  });
+  function commitQfLink(){
+    const url=qfLinkInput.value.trim(); if(!url) return;
+    if(!asgn.questionLinks) asgn.questionLinks=[];
+    asgn.questionLinks.push(url); save(); renderQuestionFiles(asgn);
+    qfLinkInput.value=''; qfLinkRow.style.display='none';
+  }
+  page.querySelector('#qf-link-ok').addEventListener('click',commitQfLink);
+  qfLinkInput.addEventListener('keydown',e=>{ if(e.key==='Enter') commitQfLink(); });
 
   page.querySelector('#add-task-row').addEventListener('click',addTask);
 
@@ -796,23 +887,59 @@ function renderMemo(){
 
   main.innerHTML=''; main.appendChild(page);
   renderMaterialFiles(asgn);
+  renderQuestionFiles(asgn);
   renderFolderAttachments(asgn);
   renderTasks(asgn);
 }
 
 /* ─── Material files ─── */
 function renderMaterialFiles(asgn){
-  const container=document.getElementById('soal-files');
+  const container=document.getElementById('mat-files');
   if(!container) return;
   const files=asgn.materialFiles||[];
+  const links=asgn.materialLinks||[];
   container.innerHTML='';
-  if(files.length===0){ container.innerHTML='<span class="soal-empty">no files uploaded yet~</span>'; return; }
+  if(files.length===0&&links.length===0){ container.innerHTML='<span class="soal-empty">nothing yet~</span>'; return; }
   files.forEach((f,i)=>{
     const isImg=f.type&&f.type.startsWith('image/');
     const chip=document.createElement('div'); chip.className='soal-file-chip'; chip.title='click to open';
     chip.innerHTML=`<span>${isImg?'🖼️':getFileIcon(f.name)}</span><span class="soal-file-name">${escHtml(f.name)}</span><button class="soal-file-del">✕</button>`;
     chip.addEventListener('click',e=>{ if(e.target.classList.contains('soal-file-del')) return; isImg?openLightbox(f.data):dlFile(f); });
     chip.querySelector('.soal-file-del').addEventListener('click',e=>{ e.stopPropagation(); askDelete('delete this file? 🥺',`<strong>"${escHtml(f.name)}"</strong> will be deleted~`,()=>{ asgn.materialFiles.splice(i,1); save(); renderMaterialFiles(asgn); }); });
+    container.appendChild(chip);
+  });
+  links.forEach((l,i)=>{
+    const label=l.replace(/^https?:\/\//,'').split('/')[0]||l;
+    const chip=document.createElement('div'); chip.className='soal-link-chip'; chip.title=l;
+    chip.innerHTML=`<span>🔗</span><span class="soal-link-name">${escHtml(label)}</span><button class="soal-link-del">✕</button>`;
+    chip.querySelector('.soal-link-name').addEventListener('click',()=>{ const a=document.createElement('a');a.href=l;a.target='_blank';a.click(); });
+    chip.querySelector('.soal-link-del').addEventListener('click',e=>{ e.stopPropagation(); askDelete('delete this link? 🥺','this link will be removed~',()=>{ asgn.materialLinks.splice(i,1); save(); renderMaterialFiles(asgn); }); });
+    container.appendChild(chip);
+  });
+}
+
+/* ─── Question Files ─── */
+function renderQuestionFiles(asgn){
+  const container=document.getElementById('qf-files');
+  if(!container) return;
+  const files=asgn.questionFiles||[];
+  const links=asgn.questionLinks||[];
+  container.innerHTML='';
+  if(files.length===0&&links.length===0){ container.innerHTML='<span class="soal-empty">nothing yet~</span>'; return; }
+  files.forEach((f,i)=>{
+    const isImg=f.type&&f.type.startsWith('image/');
+    const chip=document.createElement('div'); chip.className='soal-file-chip'; chip.title='click to open';
+    chip.innerHTML=`<span>${isImg?'🖼️':getFileIcon(f.name)}</span><span class="soal-file-name">${escHtml(f.name)}</span><button class="soal-file-del">✕</button>`;
+    chip.addEventListener('click',e=>{ if(e.target.classList.contains('soal-file-del')) return; isImg?openLightbox(f.data):dlFile(f); });
+    chip.querySelector('.soal-file-del').addEventListener('click',e=>{ e.stopPropagation(); askDelete('delete this file? 🥺',`<strong>"${escHtml(f.name)}"</strong> will be deleted~`,()=>{ asgn.questionFiles.splice(i,1); save(); renderQuestionFiles(asgn); }); });
+    container.appendChild(chip);
+  });
+  links.forEach((l,i)=>{
+    const label=l.replace(/^https?:\/\//,'').split('/')[0]||l;
+    const chip=document.createElement('div'); chip.className='soal-link-chip'; chip.title=l;
+    chip.innerHTML=`<span>🔗</span><span class="soal-link-name">${escHtml(label)}</span><button class="soal-link-del">✕</button>`;
+    chip.querySelector('.soal-link-name').addEventListener('click',()=>{ const a=document.createElement('a');a.href=l;a.target='_blank';a.click(); });
+    chip.querySelector('.soal-link-del').addEventListener('click',e=>{ e.stopPropagation(); askDelete('delete this link? 🥺','this link will be removed~',()=>{ asgn.questionLinks.splice(i,1); save(); renderQuestionFiles(asgn); }); });
     container.appendChild(chip);
   });
 }
