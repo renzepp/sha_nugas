@@ -24,17 +24,23 @@
   @keyframes float{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-12px) rotate(5deg)}}
 
   /* ── Header ── */
-  header{position:relative;z-index:10;text-align:center;padding:1.4rem 1rem 0.9rem;border-bottom:1.5px solid var(--border);background:linear-gradient(180deg,#fff5f8ee 0%,transparent 100%);backdrop-filter:blur(8px);}
+  header{position:relative;z-index:10;display:flex;align-items:center;padding:0.85rem 1.2rem;border-bottom:1.5px solid var(--border);background:linear-gradient(180deg,#fff5f8ee 0%,transparent 100%);backdrop-filter:blur(8px);gap:0.8rem;}
+  .header-center{flex:1;text-align:center;}
   .logo{font-family:'Playfair Display',serif;font-style:italic;font-size:2.1rem;color:var(--pink-deep);text-shadow:0 2px 16px #f4a7c066;}
   .logo span{color:var(--text-mid);font-style:normal;font-size:1.3rem;vertical-align:middle;}
   .tagline{font-size:0.78rem;color:var(--text-mid);letter-spacing:0.15em;text-transform:uppercase;margin-top:0.15rem;font-weight:700;}
 
+  /* sidebar toggle btn */
+  .sidebar-toggle{background:none;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;padding:0.38rem 0.52rem;font-size:1rem;color:var(--text-light);transition:all 0.2s;flex-shrink:0;line-height:1;display:flex;align-items:center;justify-content:center;}
+  .sidebar-toggle:hover{background:#fce4ec55;border-color:var(--pink-mid);color:var(--pink-deep);}
+
   /* ── Layout ── */
-  .app{position:relative;z-index:1;display:flex;flex:1;height:calc(100vh - 78px);}
+  .app{position:relative;z-index:1;display:flex;flex:1;height:calc(100vh - 68px);}
 
   /* ── Sidebar ── */
-  .sidebar{width:265px;min-width:230px;background:linear-gradient(160deg,#fff0f5 0%,#fce4ec55 100%);border-right:1.5px solid var(--border);display:flex;flex-direction:column;padding:1rem 0.7rem;gap:0.2rem;overflow-y:auto;}
-  .sidebar-section-label{font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-light);font-weight:700;padding:0.5rem 0.6rem 0.3rem;margin-top:0.2rem;}
+  .sidebar{width:265px;min-width:265px;background:linear-gradient(160deg,#fff0f5 0%,#fce4ec55 100%);border-right:1.5px solid var(--border);display:flex;flex-direction:column;padding:1rem 0.7rem;gap:0.2rem;overflow-y:auto;transition:width 0.25s ease,min-width 0.25s ease,padding 0.25s ease,opacity 0.2s ease;}
+  .sidebar.collapsed{width:0;min-width:0;padding:0;opacity:0;overflow:hidden;border-right:none;}
+  .sidebar-section-label{font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-light);font-weight:700;padding:0.5rem 0.6rem 0.3rem;margin-top:0.2rem;white-space:nowrap;}
   .matkul-row{width:100%;}
   .matkul-header{display:flex;align-items:center;gap:0.4rem;padding:0.55rem 0.6rem;border-radius:10px;border:1.5px solid transparent;background:transparent;cursor:pointer;width:100%;text-align:left;transition:all 0.18s ease;}
   .matkul-header:hover{background:#fce4ec55;border-color:var(--border);}
@@ -289,6 +295,42 @@
   .folder-attach-chip-del{background:none;border:none;cursor:pointer;color:#8aaee0;font-size:0.68rem;padding:0 2px;transition:0.15s;flex-shrink:0;}
   .folder-attach-chip-del:hover{color:#2965ad;}
   .folder-attach-empty{font-size:0.8rem;color:var(--text-light);font-weight:500;}
+  .folder-attach-link-chip{display:flex;align-items:center;gap:0.35rem;padding:0.28rem 0.55rem;border-radius:99px;background:linear-gradient(135deg,#f0f8ff,#e8f4fd);border:1.5px solid #c5ddf8;font-size:0.75rem;font-weight:600;color:#3d6dbd;cursor:default;transition:all 0.2s;max-width:210px;}
+  .folder-attach-link-chip:hover{border-color:#7ab4e8;box-shadow:0 2px 8px rgba(122,180,232,0.25);}
+  .folder-attach-link-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:130px;cursor:pointer;text-decoration:underline;text-underline-offset:2px;}
+  .folder-attach-link-del{background:none;border:none;cursor:pointer;color:#8aaee0;font-size:0.68rem;padding:0 2px;transition:0.15s;flex-shrink:0;}
+  .folder-attach-link-del:hover{color:#2965ad;}
+  .folder-attach-link-add-row{display:flex;align-items:center;gap:0.3rem;margin-top:0.35rem;}
+  .folder-attach-link-add-input{flex:1;padding:0.22rem 0.55rem;border:1.5px solid var(--border);border-radius:99px;font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:500;color:var(--text-dark);background:white;outline:none;min-width:0;transition:border-color 0.2s;}
+  .folder-attach-link-add-input:focus{border-color:#7ab4e8;}
+  .folder-attach-link-add-ok{padding:0.22rem 0.6rem;border-radius:99px;border:1.5px solid #c5ddf8;background:#edf4fd;cursor:pointer;font-size:0.72rem;font-weight:700;color:#2965ad;transition:0.15s;}
+  .folder-attach-link-add-ok:hover{background:#daeafa;}
+  /* subject gdrive button */
+  .matkul-gdrive-btn{background:none;border:none;cursor:pointer;font-size:0.9rem;padding:1px 4px;border-radius:6px;transition:0.15s;flex-shrink:0;opacity:0.45;line-height:1;}
+  .matkul-gdrive-btn:hover{background:#fce4ec;opacity:1;}
+  .matkul-gdrive-btn.has-link{opacity:1;}
+
+  /* ── Loading Screen ── */
+  #loading-screen{position:fixed;inset:0;z-index:999;background:linear-gradient(135deg,#fff0f5,#fce4ec,#fff5f8);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.2rem;transition:opacity 0.5s ease;}
+  #loading-screen.fade-out{opacity:0;pointer-events:none;}
+  .loading-title{font-family:'Playfair Display',serif;font-style:italic;font-size:2rem;color:var(--pink-deep);text-shadow:0 2px 16px #f4a7c066;}
+  .loading-ribbons{position:relative;width:160px;height:120px;}
+  .lr{position:absolute;font-size:2rem;animation:none;}
+  .lr1{top:0;left:50%;transform:translateX(-50%);animation:lr-bounce1 1.1s ease-in-out infinite;}
+  .lr2{top:20px;left:10px;animation:lr-swing2 1.3s ease-in-out infinite;}
+  .lr3{top:20px;right:10px;animation:lr-swing3 1.3s ease-in-out infinite 0.15s;}
+  .lr4{bottom:0;left:20px;animation:lr-bounce2 1s ease-in-out infinite 0.3s;}
+  .lr5{bottom:0;right:20px;animation:lr-bounce2 1s ease-in-out infinite 0.5s;}
+  @keyframes lr-bounce1{0%,100%{transform:translateX(-50%) translateY(0) rotate(-8deg) scale(1)}50%{transform:translateX(-50%) translateY(-18px) rotate(8deg) scale(1.15)}}
+  @keyframes lr-swing2{0%,100%{transform:rotate(-20deg) scale(1)}50%{transform:rotate(15deg) scale(1.1) translateY(-10px)}}
+  @keyframes lr-swing3{0%,100%{transform:rotate(20deg) scale(1)}50%{transform:rotate(-15deg) scale(1.1) translateY(-10px)}}
+  @keyframes lr-bounce2{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-14px) rotate(6deg)}}
+  .loading-dots{display:flex;gap:6px;align-items:center;}
+  .loading-dot{width:7px;height:7px;border-radius:50%;background:var(--pink-mid);animation:ldot 1s ease-in-out infinite;}
+  .loading-dot:nth-child(2){animation-delay:0.18s;}
+  .loading-dot:nth-child(3){animation-delay:0.36s;}
+  @keyframes ldot{0%,80%,100%{transform:scale(0.7);opacity:0.5}40%{transform:scale(1.2);opacity:1}}
+  .loading-sub{font-size:0.75rem;color:var(--text-light);font-weight:700;letter-spacing:0.15em;text-transform:uppercase;}
 
   ::-webkit-scrollbar{width:5px}
   ::-webkit-scrollbar-track{background:transparent}
@@ -297,18 +339,39 @@
 </head>
 <body>
 
+<!-- Loading Screen -->
+<div id="loading-screen">
+  <div class="loading-ribbons">
+    <span class="lr lr1">🎀</span>
+    <span class="lr lr2">🌸</span>
+    <span class="lr lr3">💕</span>
+    <span class="lr lr4">🎀</span>
+    <span class="lr lr5">🌷</span>
+  </div>
+  <div class="loading-title">sha-nugas 🎀</div>
+  <div class="loading-dots">
+    <div class="loading-dot"></div>
+    <div class="loading-dot"></div>
+    <div class="loading-dot"></div>
+  </div>
+  <div class="loading-sub">loading your tasks~</div>
+</div>
+
 <div class="ribbon">🎀</div>
 <div class="ribbon">🌸</div>
 <div class="ribbon">💕</div>
 <div class="ribbon">🎀</div>
 
 <header>
-  <div class="logo">sha-nugas <span>🎀</span></div>
-  <div class="tagline">selesain sesuai timeline ya 🎀</div>
+  <button class="sidebar-toggle" id="sidebar-toggle-btn" title="toggle sidebar">☰</button>
+  <div class="header-center">
+    <div class="logo">sha-nugas <span>🎀</span></div>
+    <div class="tagline">selesain sesuai timeline ya 🎀</div>
+  </div>
 </header>
 
 <div class="app">
-  <aside class="sidebar">
+  <aside class="sidebar" id="sidebar">
     <div class="sidebar-section-label">📚 Subjects</div>
     <div id="matkul-list"></div>
     <button class="add-matkul-btn" onclick="openSubjectModal()">✦ add subject</button>
@@ -543,7 +606,28 @@ function renderSidebar(){
     });
 
     acts.append(addBtn,delBtn);
-    hdr.append(chev,icon,name,cnt,acts);
+
+    // GDrive folder button
+    const gdriveBtn=document.createElement('button');
+    gdriveBtn.className='matkul-gdrive-btn'+(s.driveLink?' has-link':'');
+    gdriveBtn.title=s.driveLink?'open drive folder (right-click to change link)':'set drive folder link';
+    gdriveBtn.textContent='📁';
+    gdriveBtn.addEventListener('click',e=>{
+      e.stopPropagation();
+      if(s.driveLink){
+        const a=document.createElement('a'); a.href=s.driveLink; a.target='_blank'; a.click();
+      } else {
+        const url=prompt('Paste Google Drive folder link~');
+        if(url&&url.trim()){ s.driveLink=url.trim(); save(); renderSidebar(); }
+      }
+    });
+    gdriveBtn.addEventListener('contextmenu',e=>{
+      e.preventDefault(); e.stopPropagation();
+      const url=prompt('Update Drive folder link~', s.driveLink||'');
+      if(url!==null){ s.driveLink=url.trim()||null; save(); renderSidebar(); }
+    });
+
+    hdr.append(chev,icon,name,cnt,gdriveBtn,acts);
     hdr.addEventListener('click',()=>{ s.open=!s.open; save(); renderSidebar(); });
     row.appendChild(hdr);
 
@@ -752,9 +836,14 @@ function renderMemo(){
         <div class="folder-attach-btns">
           <button class="folder-attach-add-btn" id="folder-attach-file-btn">📁 upload file</button>
           <button class="folder-attach-add-btn" id="folder-attach-photo-btn">🖼️ upload photo</button>
+          <button class="folder-attach-add-btn" id="folder-attach-link-btn" style="border-color:#7ab4e8;color:#2965ad;">🔗 add link</button>
         </div>
       </div>
       <div class="folder-attach-files" id="folder-attach-files"></div>
+      <div id="folder-attach-link-add-row" style="display:none" class="folder-attach-link-add-row">
+        <input class="folder-attach-link-add-input" id="folder-attach-link-input" type="url" placeholder="paste url..." />
+        <button class="folder-attach-link-add-ok" id="folder-attach-link-ok">add</button>
+      </div>
       <input type="file" id="folder-attach-file-input" style="display:none" multiple accept=".pdf,.doc,.docx,.pptx,.xlsx,.txt,.zip,.csv" />
       <input type="file" id="folder-attach-photo-input" style="display:none" multiple accept="image/*" />
     </div>
@@ -868,6 +957,22 @@ function renderMemo(){
   const folderPhotoIn=page.querySelector('#folder-attach-photo-input');
   page.querySelector('#folder-attach-file-btn').addEventListener('click',()=>folderFileIn.click());
   page.querySelector('#folder-attach-photo-btn').addEventListener('click',()=>folderPhotoIn.click());
+
+  // Folder attach — link
+  const folderLinkRow=page.querySelector('#folder-attach-link-add-row');
+  const folderLinkInput=page.querySelector('#folder-attach-link-input');
+  page.querySelector('#folder-attach-link-btn').addEventListener('click',()=>{
+    folderLinkRow.style.display=folderLinkRow.style.display==='none'?'flex':'none';
+    if(folderLinkRow.style.display==='flex') setTimeout(()=>folderLinkInput.focus(),40);
+  });
+  function commitFolderLink(){
+    const url=folderLinkInput.value.trim(); if(!url) return;
+    if(!asgn.folderLinks) asgn.folderLinks=[];
+    asgn.folderLinks.push(url); save(); renderFolderAttachments(asgn);
+    folderLinkInput.value=''; folderLinkRow.style.display='none';
+  }
+  page.querySelector('#folder-attach-link-ok').addEventListener('click',commitFolderLink);
+  folderLinkInput.addEventListener('keydown',e=>{ if(e.key==='Enter') commitFolderLink(); });
   folderFileIn.addEventListener('change',function(){
     Array.from(this.files).forEach(file=>{
       const r=new FileReader();
@@ -952,14 +1057,23 @@ function renderFolderAttachments(asgn){
   const container=document.getElementById('folder-attach-files');
   if(!container) return;
   const files=asgn.folderAttachments||[];
+  const links=asgn.folderLinks||[];
   container.innerHTML='';
-  if(files.length===0){ container.innerHTML='<span class="folder-attach-empty">no attachments yet~</span>'; return; }
+  if(files.length===0&&links.length===0){ container.innerHTML='<span class="folder-attach-empty">no attachments yet~</span>'; return; }
   files.forEach((f,i)=>{
     const isImg=f.type&&f.type.startsWith('image/');
     const chip=document.createElement('div'); chip.className='folder-attach-chip'; chip.title='click to open';
     chip.innerHTML=`<span>${isImg?'🖼️':getFileIcon(f.name)}</span><span class="folder-attach-chip-name">${escHtml(f.name)}</span><button class="folder-attach-chip-del">✕</button>`;
     chip.addEventListener('click',e=>{ if(e.target.classList.contains('folder-attach-chip-del')) return; isImg?openLightbox(f.data):dlFile(f); });
     chip.querySelector('.folder-attach-chip-del').addEventListener('click',e=>{ e.stopPropagation(); askDelete('delete this attachment? 🥺',`<strong>"${escHtml(f.name)}"</strong> will be deleted~`,()=>{ asgn.folderAttachments.splice(i,1); save(); renderFolderAttachments(asgn); }); });
+    container.appendChild(chip);
+  });
+  links.forEach((l,i)=>{
+    const label=l.replace(/^https?:\/\//,'').split('/')[0]||l;
+    const chip=document.createElement('div'); chip.className='folder-attach-link-chip'; chip.title=l;
+    chip.innerHTML=`<span>🔗</span><span class="folder-attach-link-name">${escHtml(label)}</span><button class="folder-attach-link-del">✕</button>`;
+    chip.querySelector('.folder-attach-link-name').addEventListener('click',()=>{ const a=document.createElement('a');a.href=l;a.target='_blank';a.click(); });
+    chip.querySelector('.folder-attach-link-del').addEventListener('click',e=>{ e.stopPropagation(); askDelete('delete this link? 🥺','this link will be removed~',()=>{ asgn.folderLinks.splice(i,1); save(); renderFolderAttachments(asgn); }); });
     container.appendChild(chip);
   });
 }
@@ -1061,6 +1175,12 @@ function bindAttachEvents(panel,i,asgn){
   });
 }
 
+/* ─── Sidebar toggle ─── */
+document.getElementById('sidebar-toggle-btn').addEventListener('click',()=>{
+  const sb=document.getElementById('sidebar');
+  sb.classList.toggle('collapsed');
+});
+
 /* ─── Init ─── */
 (async function init(){
   await loadFromSupabase();
@@ -1069,6 +1189,10 @@ function bindAttachEvents(panel,i,asgn){
     activeSubjectId=subjects[0].id; activeAssignmentId=subjects[0].assignments[0].id;
     renderSidebar(); renderMemo();
   }
+  // dismiss loading screen
+  const ls=document.getElementById('loading-screen');
+  ls.classList.add('fade-out');
+  setTimeout(()=>ls.style.display='none', 520);
 })();
 </script>
 </body>
