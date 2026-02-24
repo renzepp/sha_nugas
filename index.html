@@ -113,7 +113,6 @@ header{position:relative;z-index:10;display:flex;align-items:center;padding:.85r
 .mode-badge:hover{transform:scale(1.06);}
 .icon-btn{background:none;border:1.5px solid var(--bdr);border-radius:10px;cursor:pointer;padding:.38rem .52rem;font-size:1rem;color:var(--tl);transition:all .2s;flex-shrink:0;line-height:1;display:flex;align-items:center;justify-content:center;}
 .icon-btn:hover{background:var(--pkd);border-color:var(--pkm);color:var(--pk);}
-/* FIX: Save indicator */
 #save-indicator{position:fixed;bottom:1rem;right:1rem;font-size:.7rem;font-weight:700;color:var(--pk);opacity:0;transition:opacity .4s;z-index:999;background:var(--pkd);border:1.5px solid var(--bdr);border-radius:99px;padding:.2rem .75rem;pointer-events:none;}
 #save-indicator.show{opacity:1;}
 .app{position:relative;z-index:1;display:flex;flex:1;height:calc(100vh - 68px);}
@@ -377,16 +376,24 @@ body.night .exam-title-inp{color:var(--td);}
 .exam-room-inp:focus{border-color:rgba(255,255,255,.7);}
 .exam-card{background:var(--bgc);border:1.5px solid var(--exb);border-radius:16px;padding:.85rem 1.1rem;margin-bottom:1.2rem;backdrop-filter:blur(4px);}
 .exam-card-label{font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:#9a7ac8;font-weight:700;}
+
+/* ── SOURCE LINK BUTTONS (revised) ── */
 .sources-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.7rem;margin-top:.8rem;}
-.source-item{display:flex;flex-direction:column;gap:.32rem;}
+.source-item{display:flex;flex-direction:column;gap:.45rem;}
 .source-lbl{font-size:.63rem;letter-spacing:.12em;text-transform:uppercase;font-weight:800;color:#6a4aad;}
-.source-field{display:flex;align-items:center;gap:.32rem;background:white;border:1.5px solid var(--exb);border-radius:10px;padding:.32rem .62rem;transition:border-color .2s;}
-.source-field:focus-within{border-color:#b899e0;}
-.source-url{flex:1;border:none;outline:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:.76rem;font-weight:500;color:var(--td);}
-.source-url::placeholder{color:var(--tl);font-style:italic;}
-.source-open{background:none;border:none;cursor:pointer;color:#b899e0;font-size:.73rem;font-weight:700;transition:.15s;padding:0 2px;}
-.source-open:hover{color:#9b6fd4;}
-body.night .source-field{background:rgba(30,20,50,.8);border-color:#4a3570;}
+.source-url-inp{width:100%;padding:.3rem .62rem;border:1.5px solid var(--exb);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.76rem;font-weight:500;color:var(--td);background:white;outline:none;transition:border-color .2s;}
+.source-url-inp:focus{border-color:#b899e0;}
+.source-url-inp::placeholder{color:var(--tl);font-style:italic;}
+body.night .source-url-inp{background:rgba(30,20,50,.8);border-color:#4a3570;color:var(--td);}
+.source-link-btn{display:flex;align-items:center;justify-content:center;gap:.4rem;padding:.35rem .7rem;border-radius:10px;border:1.5px solid var(--exb);background:linear-gradient(135deg,#f5f0ff,#ecdcf8);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.76rem;font-weight:700;color:#6a4aad;transition:all .2s;width:100%;text-align:center;overflow:hidden;}
+.source-link-btn:hover{background:linear-gradient(135deg,#ecdcf8,#d6b8f5);border-color:#b899e0;color:#4a2080;box-shadow:0 2px 8px var(--exs);}
+.source-link-btn.has-link{background:linear-gradient(135deg,#e8d8f8,#d6b8f5);border-color:#9b6fd4;color:#4a2080;}
+.source-link-btn.no-link{opacity:.55;cursor:default;}
+.source-link-btn.no-link:hover{background:linear-gradient(135deg,#f5f0ff,#ecdcf8);border-color:var(--exb);color:#6a4aad;box-shadow:none;}
+.source-link-btn-text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;}
+body.night .source-link-btn{background:rgba(40,25,70,.8);border-color:#4a3570;color:#c4a0f0;}
+body.night .source-link-btn.has-link{background:rgba(60,35,100,.9);border-color:#7850a8;color:#e0ccf8;}
+
 .materi-list{display:flex;flex-direction:column;gap:.48rem;margin-bottom:.65rem;}
 .materi-item{display:flex;flex-direction:column;border:1.5px solid var(--exb);border-radius:10px;overflow:hidden;animation:slideIn .2s ease;}
 .materi-main{display:flex;align-items:center;gap:.58rem;padding:.45rem .68rem;background:linear-gradient(135deg,#f5f0ff,#f0eaff);transition:all .18s;}
@@ -659,7 +666,6 @@ body.night .upcoming-name{color:var(--td);}
   </main>
 </div>
 
-<!-- Save indicator -->
 <div id="save-indicator">saving~ 🎀</div>
 
 <div class="ctx-menu" id="ctx-menu" style="display:none"></div>
@@ -736,7 +742,7 @@ body.night .upcoming-name{color:var(--td);}
       <div><label class="mfl">time</label><input type="time" id="ev-time" /></div>
     </div>
     <label class="mfl">room / location</label>
-    <input type="text" id="ev-room" placeholder="e.g. Gedung A lt.3 / Online" />
+    <input type="text" id="ev-room" placeholder="e.g. Building A 3rd floor / Online" />
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeModal('modal-exam-event')">cancel</button>
       <button class="btn-ok exam" onclick="createEV()">add ✦</button>
@@ -825,10 +831,7 @@ let _calMonth = new Date();
 let _moveData = null, _moveSel = null;
 
 /* ═══════════════════════════════════════════════
-   FIX 1: SUPABASE — robust load with full array normalization
-   Root cause: missing/undefined arrays caused silent crashes
-   after refresh when data was partially saved or structured
-   differently from what functions expected.
+   NORMALIZATION
 ═══════════════════════════════════════════════ */
 function _normalizeAssignment(a) {
   return {
@@ -872,13 +875,13 @@ function _normalizeMateri(m) {
 function _normalizeExamFolder(f) {
   return {
     ...f,
-    examDate:       f.examDate       || null,
-    examTime:       f.examTime       || null,
-    examRoom:       f.examRoom       || '',
-    mainSource:     f.mainSource     || '',
-    pptLink:        f.pptLink        || '',
-    examCollections:f.examCollections|| '',
-    notes:          f.notes          || '',
+    examDate:        f.examDate        || null,
+    examTime:        f.examTime        || null,
+    examRoom:        f.examRoom        || '',
+    mainSource:      f.mainSource      || '',
+    pptLink:         f.pptLink         || '',
+    examCollections: f.examCollections || '',
+    notes:           f.notes           || '',
     materiList: Array.isArray(f.materiList) ? f.materiList.map(_normalizeMateri) : [],
   };
 }
@@ -894,6 +897,9 @@ function _normalizeSubject(s) {
   };
 }
 
+/* ═══════════════════════════════════════════════
+   SUPABASE
+═══════════════════════════════════════════════ */
 async function loadDB() {
   try {
     const r = await fetch(
@@ -903,21 +909,14 @@ async function loadDB() {
     if (!r.ok) { console.error('loadDB HTTP error:', r.status); return; }
     const rows = await r.json();
     if (!rows || !rows.length || !rows[0].content) return;
-
     const d = rows[0].content;
-
-    // FIX: handle all possible storage shapes
-    let rawSubjects   = [];
-    let rawExamEvents = [];
+    let rawSubjects = [], rawExamEvents = [];
     if (Array.isArray(d)) {
-      // old format: bare array of subjects
       rawSubjects = d;
     } else if (d && typeof d === 'object') {
       rawSubjects   = Array.isArray(d.subjects)   ? d.subjects   : [];
       rawExamEvents = Array.isArray(d.examEvents) ? d.examEvents : [];
     }
-
-    // Normalize everything — this is the key fix
     subjects   = rawSubjects.map(_normalizeSubject);
     examEvents = rawExamEvents.filter(ev => ev && ev.folderId && ev.date);
   } catch (e) {
@@ -925,14 +924,8 @@ async function loadDB() {
   }
 }
 
-/* ═══════════════════════════════════════════════
-   FIX 2: SAVE — deep clone + beforeunload flush
-   Root cause: debounce lost saves on tab close;
-   mutated objects could corrupt mid-save payload.
-═══════════════════════════════════════════════ */
 async function _doSave() {
   try {
-    // Deep clone prevents sending half-mutated state
     const payload = JSON.parse(JSON.stringify({ subjects, examEvents }));
     await fetch(`${SB_URL}/rest/v1/data?id=eq.main`, {
       method: 'PATCH',
@@ -950,7 +943,6 @@ async function _doSave() {
 }
 
 function save() {
-  // Show save indicator
   const ind = document.getElementById('save-indicator');
   if (ind) {
     ind.classList.add('show');
@@ -961,7 +953,6 @@ function save() {
   _saveT = setTimeout(_doSave, 800);
 }
 
-// FIX: flush save immediately before tab closes
 window.addEventListener('beforeunload', () => {
   if (_saveT) { clearTimeout(_saveT); _doSave(); }
 });
@@ -1101,10 +1092,7 @@ function createHW() {
   const name = document.getElementById('hw-name-inp').value.trim();
   if (!name) { document.getElementById('hw-name-inp').focus(); return; }
   const s = getSub(_pendingSid); if (!s) return;
-  // FIX: use normalizer so all arrays guaranteed present
-  const a = _normalizeAssignment({
-    id: uid(), name, icon: _selEmojiHW, createdAt: iso()
-  });
+  const a = _normalizeAssignment({ id: uid(), name, icon: _selEmojiHW, createdAt: iso() });
   s.assignments.push(a); s.open = true;
   save(); closeModal('modal-hw');
   activeSid = _pendingSid; activeAid = a.id;
@@ -1130,7 +1118,6 @@ function createEF() {
   const type = document.getElementById('ef-type-sel').value;
   const custom = document.getElementById('ef-name-inp').value.trim();
   const name = custom || EXAM_TYPES[type];
-  // FIX: use normalizer
   const f = _normalizeExamFolder({ id: uid(), name, icon: _selEmojiEF, examType: type });
   s.exams.push(f); s.open = true;
   save(); closeModal('modal-exam-folder');
@@ -1170,7 +1157,6 @@ function createEV() {
   const time = document.getElementById('ev-time').value;
   const room = document.getElementById('ev-room').value.trim();
   if (!fid || !date) { alert('Please pick an exam and date~'); return; }
-  // Sync to folder
   subjects.forEach(s => (s.exams || []).forEach(f => {
     if (f.id === fid) { f.examDate = date; f.examTime = time || null; f.examRoom = room || ''; }
   }));
@@ -1383,7 +1369,6 @@ function renderHW() {
   const main = document.getElementById('main-content');
   const subj = getSub(activeSid), asgn = subj ? getHW(activeSid, activeAid) : null;
   if (!asgn) { renderEmpty(); return; }
-  // FIX: ensure asgn is normalized (handles any stale data still in memory)
   if (!Array.isArray(asgn.tasks)) asgn.tasks = [];
   if (!Array.isArray(asgn.materialFiles)) asgn.materialFiles = [];
   if (!Array.isArray(asgn.materialLinks)) asgn.materialLinks = [];
@@ -1630,11 +1615,9 @@ function renderTasks(asgn) {
   });
 }
 
-/* FIX: Math.max on empty array returns -Infinity causing NaN task numbers */
 function addTask() {
   const asgn = getHW(activeSid, activeAid); if (!asgn) return;
   if (!Array.isArray(asgn.tasks)) asgn.tasks = [];
-  // FIX: safe max — if no tasks, start at 0
   const maxN = asgn.tasks.length > 0 ? Math.max(...asgn.tasks.map(t => t.number || 0)) : 0;
   asgn.tasks.push(_normalizeTask({ number: maxN + 1, label: '', done: false, links: [], photos: [] }, maxN));
   save(); renderHW(); renderSidebar();
@@ -1676,13 +1659,16 @@ function _bindAttach(panel, i, asgn) {
 
 /* ═══════════════════════════════════════════════
    EXAM PAGE
+   CHANGES:
+   - All Indonesian text → English
+   - Sources & Collections: input field + proper link button
+     that shows title/label when link is set
 ═══════════════════════════════════════════════ */
 function renderExam() {
   clearInterval(_cdInt);
   const main = document.getElementById('main-content');
   const s = getSub(activeESid), f = s ? getEF(activeESid, activeEFid) : null;
   if (!f) { renderEmpty(); return; }
-  // FIX: ensure materi array is clean
   if (!Array.isArray(f.materiList)) f.materiList = [];
   f.materiList = f.materiList.map(_normalizeMateri);
 
@@ -1709,7 +1695,7 @@ function renderExam() {
     <div class="materi-item" id="mi-${i}">
       <div class="materi-main">
         <div class="materi-chk ${m.done?'done':''}" data-mi="${i}">${m.done?'✓':''}</div>
-        <input class="materi-name-inp ${m.done?'done':''}" value="${esc(m.name||'')}" placeholder="materi name..." data-mn="${i}"/>
+        <input class="materi-name-inp ${m.done?'done':''}" value="${esc(m.name||'')}" placeholder="material name..." data-mn="${i}"/>
         <div class="materi-btns">
           ${(m.links&&m.links.length)||(m.files&&m.files.length)?'<span style="font-size:.65rem;color:#b899e0">📎</span>':''}
           <button class="materi-att-btn" data-mlink="${i}">🔗 link</button>
@@ -1722,6 +1708,20 @@ function renderExam() {
         ${(m.files||[]).map((fl,fi)=>`<div class="file-chip" style="background:linear-gradient(135deg,#f3eeff,#e8dcf8)"><span>${fileIcon(fl.name)}</span><span class="chip-name">${esc(fl.name)}</span><button class="chip-del" data-dmf="${i}-${fi}">✕</button></div>`).join('')}
       </div>
     </div>`).join('');
+
+  // Helper: build a source item with URL input + link button
+  function srcItem(label, key, val, btnId, inpId) {
+    const hasLink = !!val;
+    const btnLabel = hasLink ? _sourceLinkTitle(val, label) : `open ${label} ↗`;
+    return `
+      <div class="source-item">
+        <span class="source-lbl">${label}</span>
+        <input class="source-url-inp" type="url" id="${inpId}" placeholder="paste link here..." value="${esc(val||'')}"/>
+        <button class="source-link-btn ${hasLink?'has-link':'no-link'}" id="${btnId}" title="${esc(val||'')}">
+          <span class="source-link-btn-text">${esc(btnLabel)}</span>
+        </button>
+      </div>`;
+  }
 
   const page = document.createElement('div'); page.className = 'exam-page';
   page.innerHTML = `
@@ -1751,9 +1751,9 @@ function renderExam() {
       <span class="exam-card-label">📌 sources & collections</span>
     </div>
     <div class="sources-grid">
-      <div class="source-item"><span class="source-lbl">📗 main source (book)</span><div class="source-field"><input class="source-url" type="url" id="src-main" placeholder="gdrive / link..." value="${esc(f.mainSource||'')}"/><button class="source-open" id="src-main-o">↗</button></div></div>
-      <div class="source-item"><span class="source-lbl">📊 ppt slides</span><div class="source-field"><input class="source-url" type="url" id="src-ppt" placeholder="gdrive folder..." value="${esc(f.pptLink||'')}"/><button class="source-open" id="src-ppt-o">↗</button></div></div>
-      <div class="source-item"><span class="source-lbl">📁 exam collections</span><div class="source-field"><input class="source-url" type="url" id="src-ec" placeholder="past year papers..." value="${esc(f.examCollections||'')}"/><button class="source-open" id="src-ec-o">↗</button></div></div>
+      ${srcItem('📗 Main Source (Book)', 'mainSource', f.mainSource, 'src-main-btn', 'src-main-inp')}
+      ${srcItem('📊 PPT Slides', 'pptLink', f.pptLink, 'src-ppt-btn', 'src-ppt-inp')}
+      ${srcItem('📁 Exam Collections', 'examCollections', f.examCollections, 'src-ec-btn', 'src-ec-inp')}
     </div>
   </div>
   <div class="exam-card">
@@ -1763,16 +1763,32 @@ function renderExam() {
     </div>
     <div class="materi-list" id="materi-list">${matHtml}</div>
     <div class="materi-progress"><div class="materi-pbar"><div class="materi-pfill" id="materi-fill" style="width:${pct}%"></div></div></div>
-    <div class="add-materi-btn" id="add-materi"><span>＋</span> add materi</div>
+    <div class="add-materi-btn" id="add-materi"><span>＋</span> add material</div>
   </div>
   <div class="exam-card">
     <span class="exam-card-label">🗒️ notes</span>
-    <textarea class="notes-ta exam-notes-ta" id="ef-notes" placeholder="catatan untuk ujian ini...">${esc(f.notes||'')}</textarea>
+    <textarea class="notes-ta exam-notes-ta" id="ef-notes" placeholder="write notes for this exam...">${esc(f.notes||'')}</textarea>
   </div>`;
 
   _bindExam(page, s, f);
   main.innerHTML = ''; main.appendChild(page);
   if (displayDate) _startCD({ ...f, examDate: displayDate, examTime: displayTime });
+}
+
+/* Helper: extract a readable title from a URL for the button label */
+function _sourceLinkTitle(url, fallback) {
+  try {
+    const u = new URL(url);
+    // Google Drive: try to extract folder/file name hint from path
+    const host = u.hostname.replace(/^www\./, '');
+    if (host === 'drive.google.com') return '📂 Open Google Drive';
+    if (host === 'docs.google.com') return '📄 Open Google Docs';
+    if (host.includes('youtube')) return '▶ Open YouTube';
+    // Generic: show host without www
+    return `↗ Open ${host}`;
+  } catch {
+    return fallback || 'open link ↗';
+  }
 }
 
 function _bindExam(page, s, f) {
@@ -1792,10 +1808,39 @@ function _bindExam(page, s, f) {
     }});
   });
   page.querySelector('#ef-room').addEventListener('change', function() { f.examRoom = this.value.trim(); _syncFolderToCalEvent(f); save(); });
-  [['#src-main','#src-main-o','mainSource'],['#src-ppt','#src-ppt-o','pptLink'],['#src-ec','#src-ec-o','examCollections']].forEach(([inp, btn, key]) => {
-    page.querySelector(inp).addEventListener('change', function() { f[key] = this.value.trim(); save(); });
-    page.querySelector(btn).addEventListener('click', () => { if (f[key]) window.open(f[key], '_blank'); });
+
+  // Source & Collections bindings: input saves value, button opens link
+  [
+    ['#src-main-inp', '#src-main-btn', 'mainSource'],
+    ['#src-ppt-inp',  '#src-ppt-btn',  'pptLink'],
+    ['#src-ec-inp',   '#src-ec-btn',   'examCollections'],
+  ].forEach(([inpSel, btnSel, key]) => {
+    const inp = page.querySelector(inpSel);
+    const btn = page.querySelector(btnSel);
+    const updateBtn = () => {
+      const val = f[key];
+      if (val) {
+        btn.className = 'source-link-btn has-link';
+        btn.title = val;
+        btn.querySelector('.source-link-btn-text').textContent = _sourceLinkTitle(val, 'open link ↗');
+      } else {
+        btn.className = 'source-link-btn no-link';
+        btn.title = '';
+        btn.querySelector('.source-link-btn-text').textContent = 'open link ↗';
+      }
+    };
+    inp.addEventListener('change', function() {
+      f[key] = this.value.trim(); save(); updateBtn();
+    });
+    inp.addEventListener('input', function() {
+      // live update button state while typing
+      f[key] = this.value.trim(); updateBtn();
+    });
+    btn.addEventListener('click', () => {
+      if (f[key]) window.open(f[key], '_blank');
+    });
   });
+
   page.querySelectorAll('[data-mi]').forEach(el => el.addEventListener('click', () => {
     const i = parseInt(el.dataset.mi); f.materiList[i].done = !f.materiList[i].done; save();
     el.innerHTML = f.materiList[i].done ? '✓' : ''; el.classList.toggle('done', f.materiList[i].done);
@@ -1804,7 +1849,7 @@ function _bindExam(page, s, f) {
   }));
   page.querySelectorAll('[data-mn]').forEach(inp => inp.addEventListener('change', function() { f.materiList[parseInt(this.dataset.mn)].name = this.value; save(); }));
   page.querySelectorAll('[data-mlink]').forEach(btn => btn.addEventListener('click', () => {
-    const i = parseInt(btn.dataset.mlink); const u = prompt('Paste link for this materi~');
+    const i = parseInt(btn.dataset.mlink); const u = prompt('Paste link for this material~');
     if (u && u.trim()) { if (!Array.isArray(f.materiList[i].links)) f.materiList[i].links = []; f.materiList[i].links.push(u.trim()); save(); renderExam(); }
   }));
   page.querySelectorAll('[data-mfile]').forEach(inp => inp.addEventListener('change', function() {
@@ -1817,7 +1862,7 @@ function _bindExam(page, s, f) {
       }; r.readAsDataURL(file);
     }); this.value = '';
   }));
-  page.querySelectorAll('[data-mdel]').forEach(btn => btn.addEventListener('click', () => askDelete('delete materi?', '', () => { f.materiList.splice(parseInt(btn.dataset.mdel), 1); save(); renderExam(); })));
+  page.querySelectorAll('[data-mdel]').forEach(btn => btn.addEventListener('click', () => askDelete('delete material?', '', () => { f.materiList.splice(parseInt(btn.dataset.mdel), 1); save(); renderExam(); })));
   page.querySelectorAll('[data-open]').forEach(el => el.addEventListener('click', () => window.open(el.dataset.open, '_blank')));
   page.querySelectorAll('[data-dml]').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); const [mi, li] = b.dataset.dml.split('-').map(Number); askDelete('remove link?', '', () => { f.materiList[mi].links.splice(li, 1); save(); renderExam(); }); }));
   page.querySelectorAll('[data-dmf]').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); const [mi, fi] = b.dataset.dmf.split('-').map(Number); askDelete('remove file?', '', () => { f.materiList[mi].files.splice(fi, 1); save(); renderExam(); }); }));
@@ -1843,11 +1888,9 @@ function _updMatPct(f) {
   const lbl = document.getElementById('materi-pct'); if (lbl) lbl.textContent = `${done}/${total} (${pct}%)`;
 }
 
-/* FIX: safer countdown — use explicit date parse to avoid timezone bugs */
 function _startCD(f) { clearInterval(_cdInt); _updCD(f); _cdInt = setInterval(() => _updCD(f), 1000); }
 function _updCD(f) {
   if (!f || !f.examDate) return;
-  // FIX: explicit time parsing avoids midnight-vs-local timezone bugs
   const timeStr = f.examTime || '09:00';
   const [yr, mo, dy] = f.examDate.split('-').map(Number);
   const [hr, mn] = timeStr.split(':').map(Number);
@@ -1935,9 +1978,7 @@ function renderCalContent() {
 }
 
 /* ═══════════════════════════════════════════════
-   FIX: COQUETTE DATE/TIME PICKER — reset state on open
-   Root cause: _cqSelDate persisted across multiple
-   picker opens, causing wrong date to appear pre-selected
+   COQUETTE DATE/TIME PICKER
 ═══════════════════════════════════════════════ */
 let _cqPickerMonth = new Date();
 let _cqSelDate = null;
@@ -1945,13 +1986,11 @@ let _cqShowTime = false;
 let _cqCallback = null;
 
 function openCQPicker(opts) {
-  // FIX: always reset state cleanly
   _cqSelDate = opts.date || null;
   _cqShowTime = !!opts.showTime;
   _cqCallback = opts.callback;
   document.querySelector('.cq-picker-title').textContent = opts.title || '🎀 pick a date';
   document.getElementById('cq-time-row').style.display = _cqShowTime ? 'flex' : 'none';
-  // Set time inputs
   if (_cqShowTime && opts.time) {
     const parts = opts.time.split(':');
     document.getElementById('cq-hr').value = parts[0] || '';
@@ -1960,7 +1999,6 @@ function openCQPicker(opts) {
     document.getElementById('cq-hr').value = '';
     document.getElementById('cq-mn').value = '';
   }
-  // Set calendar starting month
   if (opts.date) {
     const parts = opts.date.split('-').map(Number);
     _cqPickerMonth = new Date(parts[0], parts[1] - 1, 1);
@@ -2011,7 +2049,6 @@ document.getElementById('cq-ok').addEventListener('click', () => {
     const hr = document.getElementById('cq-hr').value;
     const mn = document.getElementById('cq-mn').value;
     if (hr !== '' && mn !== '') {
-      // FIX: clamp valid hour/minute values
       const h = Math.min(23, Math.max(0, parseInt(hr) || 0));
       const m = Math.min(59, Math.max(0, parseInt(mn) || 0));
       timeStr = String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
@@ -2050,7 +2087,6 @@ setInterval(() => {
       const last = localStorage.getItem('sha-last-hw');
       if (last) {
         const [sid, aid] = last.split('|');
-        // FIX: validate IDs before using them
         if (sid && aid && getHW(sid, aid)) {
           activeSid = sid; activeAid = aid;
           const s = getSub(sid); if (s) s.open = true;
@@ -2061,7 +2097,6 @@ setInterval(() => {
       const last = localStorage.getItem('sha-last-exam');
       if (last) {
         const [sid, fid] = last.split('|');
-        // FIX: validate IDs before using them
         if (sid && fid && getEF(sid, fid)) {
           activeESid = sid; activeEFid = fid;
           const s = getSub(sid); if (s) s.open = true;
