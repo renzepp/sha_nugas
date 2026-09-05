@@ -10,5 +10,5 @@
 //   - Copy "Project URL" into SB_URL
 //   - Copy the "anon / public" key into SB_KEY
 
-const SB_URL = 'YOUR_SUPABASE_PROJECT_URL';
-const SB_KEY = 'YOUR_SUPABASE_ANON_KEY';
+const SB_URL = 'https://qtroimlmyzvlpwdextsh.supabase.co';
+const SB_KEY = 'sb_publishable_ujU3tRraKHC9JAGTbzVhPg_6aX4FhdK';
